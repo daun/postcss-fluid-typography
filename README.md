@@ -6,7 +6,7 @@ Responsive typography values using linear scale: define `fluid` properties for `
 A plugin for [PostCSS][postcss]. Fork of [postcss-responsive-type][upstream] with slightly
 different ergonomics and support for custom properties.
 
-![Responsive Type Demo][demo]
+![Fluid Typogrpahy Demo][demo]
 
 ## Usage
 
@@ -84,7 +84,7 @@ provide a simple static fallback:
 ```css
 .foo {
   font-size: 16px;
-  font-size: responsive;
+  font-size: fluid;
 }
 ```
 
