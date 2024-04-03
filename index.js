@@ -146,7 +146,7 @@ function buildRules(rule, declName, params, result) {
     throw rule.error('sizes with unitless values are not supported');
   }
 
-  if (sizeUnit !== maxSizeUnit && widthUnit !== maxWidthUnit) {
+  if (sizeUnit !== maxSizeUnit || widthUnit !== maxWidthUnit) {
     rule.warn(result, 'min/max unit types must match');
   }
 
