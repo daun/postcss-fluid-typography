@@ -167,7 +167,11 @@ function buildRules(rule, declName, params, result) {
   sizeDiff = parseFloat(maxSize) - parseFloat(minSize);
   rangeDiff = parseFloat(maxWidth) - parseFloat(minWidth);
 
-  rules.fluid = 'calc(' + minSize + ' + ' + sizeDiff + ' * ((100vw - ' + minWidth + ') / ' + rangeDiff + '))';
+  // @eslint-disable-next-line
+  const fluid = 'calc(' + minSize + ' + ' + sizeDiff + ' * ((100vw - ' + minWidth + ') / ' + rangeDiff + '))';
+
+  rules.fluid = postcss.decl({ prop: declName, value: fluid });
+  rules.variable = { prop: `--${declName}`, value: fluid };
 
   // Build the media queries
   rules.minMedia = postcss.atRule({
@@ -186,10 +190,8 @@ function buildRules(rule, declName, params, result) {
       selector: rule.selector,
     })
     .walkRules((selector) => {
-      selector.append({
-        prop: declName,
-        value: params.minSize,
-      });
+      selector.append({ prop: declName, value: params.minSize });
+      selector.append({ prop: `--${declName}`, value: params.minSize });
     });
 
   rules.maxMedia
@@ -197,23 +199,20 @@ function buildRules(rule, declName, params, result) {
       selector: rule.selector,
     })
     .walkRules((selector) => {
-      selector.append({
-        prop: declName,
-        value: params.maxSize,
-      });
+      selector.append({ prop: declName, value: params.maxSize });
+      selector.append({ prop: `--${declName}`, value: params.maxSize });
     });
 
   return rules;
 }
 
-const plugin = () => ({
-  postcssPlugin: 'postcss-fluid-typography',
-  Once(root, { result }) {
-    root.walkRules(function (rule) {
-      let thisRule, newRules;
+module.exports = postcss.plugin('postcss-fluid-typography', () => {
+  return function (css, result) {
+    css.walkRules(function (rule) {
+      let thisRule, newRules, params;
 
-      // Check root font-size (for rem units)
-      if (rule.selector.indexOf('html') > -1) {
+      // Store root font-size (for px->rem conversion)
+      if ([':root', 'html'].includes(rule.selector)) {
         rule.walkDecls('font-size', (decl) => {
           if (decl.value.indexOf('px') > -1) {
             rootSize = decl.value;
@@ -222,8 +221,6 @@ const plugin = () => ({
       }
 
       rule.walkDecls(/^(font-size|line-height|letter-spacing)$/, (decl) => {
-        let params;
-
         // If decl doesn't contain fluid keyword, exit
         if (decl.value.indexOf('fluid') === -1) {
           return;
@@ -234,18 +231,13 @@ const plugin = () => ({
         newRules = buildRules(thisRule, decl.prop, params, result);
 
         // Insert the base fluid declaration
-        if (decl.value.indexOf('fluid') > -1) {
-          decl.replaceWith({ prop: decl.prop, value: newRules.fluid });
-        }
+        decl.replaceWith(newRules.fluid);
+        thisRule.prepend(newRules.variable);
 
         // Insert the media queries
-        thisRule.parent.insertAfter(thisRule, newRules.minMedia);
-        thisRule.parent.insertAfter(thisRule, newRules.maxMedia);
+        thisRule.after(newRules.minMedia);
+        thisRule.after(newRules.maxMedia);
       });
     });
-  },
+  };
 });
-
-plugin.postcss = true;
-
-module.exports = plugin;
