@@ -1,5 +1,5 @@
 .foo {
-  line-height: responsive;
+  line-height: fluid;
   min-line-height: 10px;
   max-line-height: 30px;
   line-height-range: 300px 900px;

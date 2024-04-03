@@ -1,5 +1,5 @@
 .foo {
-  font-size: responsive;
+  font-size: fluid;
   min-font-size: 10px;
   max-font-size: 30px;
   lower-font-range: 300px;

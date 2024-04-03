@@ -3,6 +3,6 @@ html {
 }
 
 .foo {
-  font-size: responsive 1.6rem 4.8rem;
+  font-size: fluid 1.6rem 4.8rem;
   font-range: 420px 1280px;
 }
