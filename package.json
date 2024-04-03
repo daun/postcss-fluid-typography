@@ -37,6 +37,7 @@
   },
   "scripts": {
     "test": "mocha test",
-    "posttest": "eslint ."
+    "posttest": "eslint .",
+    "format": "eslint . --fix"
   }
 }

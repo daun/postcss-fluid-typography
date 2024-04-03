@@ -7,45 +7,45 @@ const DEFAULT_PARAMS = {
         minSize: '12px',
         maxSize: '21px',
         minWidth: '420px',
-        maxWidth: '1280px'
+        maxWidth: '1280px',
       },
       'line-height': {
         minSize: '1.2em',
         maxSize: '1.8em',
         minWidth: '420px',
-        maxWidth: '1280px'
+        maxWidth: '1280px',
       },
       'letter-spacing': {
         minSize: '0px',
         maxSize: '4px',
         minWidth: '420px',
-        maxWidth: '1280px'
-      }
+        maxWidth: '1280px',
+      },
     },
     PARAM_RANGE = {
       'font-size': 'font-range',
       'line-height': 'line-height-range',
-      'letter-spacing': 'letter-spacing-range'
+      'letter-spacing': 'letter-spacing-range',
     },
     PARAM_DECLS = {
       'font-size': {
         minSize: 'min-font-size',
         maxSize: 'max-font-size',
         minWidth: 'lower-font-range',
-        maxWidth: 'upper-font-range'
+        maxWidth: 'upper-font-range',
       },
       'line-height': {
         minSize: 'min-line-height',
         maxSize: 'max-line-height',
         minWidth: 'lower-line-height-range',
-        maxWidth: 'upper-line-height-range'
+        maxWidth: 'upper-line-height-range',
       },
       'letter-spacing': {
         minSize: 'min-letter-spacing',
         maxSize: 'max-letter-spacing',
         minWidth: 'lower-letter-spacing-range',
-        maxWidth: 'upper-letter-spacing-range'
-      }
+        maxWidth: 'upper-letter-spacing-range',
+      },
     };
 
 // Assign default root size
@@ -75,8 +75,7 @@ function pxToRem(px) {
 }
 
 function fetchFluidSizes(rule, declName, cb) {
-  rule.walkDecls(declName, decl => {
-
+  rule.walkDecls(declName, (decl) => {
     if (decl.value.indexOf('fluid') > -1) {
       let vals = decl.value.match(/-?\d*\.?\d+(?:\w+)?/g);
 
@@ -88,7 +87,7 @@ function fetchFluidSizes(rule, declName, cb) {
 }
 
 function fetchRangeSizes(rule, declName, cb) {
-  rule.walkDecls(declName, decl => {
+  rule.walkDecls(declName, (decl) => {
     let vals = decl.value.split(/\s+/);
 
     cb(vals[0], vals[1]);
@@ -115,8 +114,8 @@ function fetchParams(rule, declName) {
   // Fetch parameters from expanded properties
   rangeDecl = PARAM_DECLS[declName];
 
-  Object.keys(rangeDecl).forEach(param => {
-    rule.walkDecls(rangeDecl[param], decl => {
+  Object.keys(rangeDecl).forEach((param) => {
+    rule.walkDecls(rangeDecl[param], (decl) => {
       params[param] = decl.value.trim();
       decl.remove();
     });
@@ -154,7 +153,10 @@ function buildRules(rule, declName, params, result) {
   if (sizeUnit === 'rem' && widthUnit === 'px') {
     minWidth = pxToRem(params.minWidth);
     maxWidth = pxToRem(params.maxWidth);
-  } else if (sizeUnit === widthUnit || sizeUnit === 'rem' && widthUnit === 'em') {
+  } else if (
+    sizeUnit === widthUnit ||
+    (sizeUnit === 'rem' && widthUnit === 'em')
+  ) {
     minWidth = params.minWidth;
     maxWidth = params.maxWidth;
   } else {
@@ -170,32 +172,36 @@ function buildRules(rule, declName, params, result) {
   // Build the media queries
   rules.minMedia = postcss.atRule({
     name: 'media',
-    params: 'screen and (max-width: ' + params.minWidth + ')'
+    params: 'screen and (max-width: ' + params.minWidth + ')',
   });
 
   rules.maxMedia = postcss.atRule({
     name: 'media',
-    params: 'screen and (min-width: ' + params.maxWidth + ')'
+    params: 'screen and (min-width: ' + params.maxWidth + ')',
   });
 
   // Add the required content to new media queries
-  rules.minMedia.append({
-    selector: rule.selector
-  }).walkRules(selector => {
-    selector.append({
-      prop: declName,
-      value: params.minSize
+  rules.minMedia
+    .append({
+      selector: rule.selector,
+    })
+    .walkRules((selector) => {
+      selector.append({
+        prop: declName,
+        value: params.minSize,
+      });
     });
-  });
 
-  rules.maxMedia.append({
-    selector: rule.selector
-  }).walkRules(selector => {
-    selector.append({
-      prop: declName,
-      value: params.maxSize
+  rules.maxMedia
+    .append({
+      selector: rule.selector,
+    })
+    .walkRules((selector) => {
+      selector.append({
+        prop: declName,
+        value: params.maxSize,
+      });
     });
-  });
 
   return rules;
 }
@@ -208,14 +214,14 @@ const plugin = () => ({
 
       // Check root font-size (for rem units)
       if (rule.selector.indexOf('html') > -1) {
-        rule.walkDecls('font-size', decl => {
+        rule.walkDecls('font-size', (decl) => {
           if (decl.value.indexOf('px') > -1) {
             rootSize = decl.value;
           }
         });
       }
 
-      rule.walkDecls(/^(font-size|line-height|letter-spacing)$/, decl => {
+      rule.walkDecls(/^(font-size|line-height|letter-spacing)$/, (decl) => {
         let params;
 
         // If decl doesn't contain fluid keyword, exit
@@ -237,7 +243,7 @@ const plugin = () => ({
         thisRule.parent.insertAfter(thisRule, newRules.maxMedia);
       });
     });
-  }
+  },
 });
 
 plugin.postcss = true;
