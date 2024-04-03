@@ -1,30 +1,31 @@
 {
-  "name": "postcss-responsive-type",
+  "name": "postcss-fluid-typography",
   "version": "1.0.0",
   "description": "PostCSS plugin that adds responsive magic to font-size",
   "keywords": [
     "postcss",
-    "css",
     "postcss-plugin",
-    "typography"
+    "css",
+    "typography",
+    "scale"
   ],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/seaneking/postcss-responsive-type.git"
+    "url": "https://github.com/daun/postcss-fluid-typography.git"
   },
-  "author": "Sean King <sean@simpla.io>",
+  "author": "Philipp Daun <daun@daun.ltd>",
   "maintainers": [
     {
-      "name": "Sean King",
-      "email": "sean@simpla.io",
-      "web": "http://simpla.io"
+      "name": "Philipp Daun",
+      "email": "daun@daun.ltd",
+      "web": "https://daun.ltd"
     }
   ],
   "bugs": {
-    "url": "https://github.com/seaneking/postcss-responsive-type/issues"
+    "url": "https://github.com/daun/postcss-fluid-typography/issues"
   },
-  "homepage": "https://github.com/seaneking/postcss-responsive-type",
+  "homepage": "https://github.com/daun/postcss-fluid-typography",
   "devDependencies": {
     "chai": "^4.0.2",
     "eslint": "^4.1.1",

@@ -32,7 +32,7 @@ function test(fixture, opts, warnings, done) {
     }).catch(done);
 }
 
-describe('postcss-responsive-type', () => {
+describe('postcss-fluid-typography', () => {
 
   it('builds responsive type with defaults', done => test('default', {}, [], done));
 
@@ -67,7 +67,7 @@ describe('postcss-responsive-type', () => {
         expect(error).to.contain({
           name: 'CssSyntaxError',
           reason: 'sizes with unitless values are not supported',
-          plugin: 'postcss-responsive-type',
+          plugin: 'postcss-fluid-typography',
           source: '.foo {\n  line-height: responsive 1.5 2;\n}\n',
           line: 1,
           column: 1

@@ -201,7 +201,7 @@ function buildRules(rule, declName, params, result) {
 }
 
 const plugin = () => ({
-  postcssPlugin: 'postcss-responsive-type',
+  postcssPlugin: 'postcss-fluid-typography',
   Once(root, { result }) {
     root.walkRules(function (rule) {
       let thisRule, newRules;
