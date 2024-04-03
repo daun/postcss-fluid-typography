@@ -74,10 +74,10 @@ function pxToRem(px) {
   return parseFloat(px) / parseFloat(rootSize) + 'rem';
 }
 
-function fetchResponsiveSizes(rule, declName, cb) {
+function fetchFluidSizes(rule, declName, cb) {
   rule.walkDecls(declName, decl => {
 
-    if (decl.value.indexOf('responsive') > -1) {
+    if (decl.value.indexOf('fluid') > -1) {
       let vals = decl.value.match(/-?\d*\.?\d+(?:\w+)?/g);
 
       if (vals) {
@@ -101,7 +101,7 @@ function fetchParams(rule, declName) {
       rangeDecl;
 
   // Fetch params from shorthand declName, i.e., font-size or line-height, etc
-  fetchResponsiveSizes(rule, declName, (minSize, maxSize) => {
+  fetchFluidSizes(rule, declName, (minSize, maxSize) => {
     params.minSize = minSize;
     params.maxSize = maxSize;
   });
@@ -126,7 +126,7 @@ function fetchParams(rule, declName) {
 }
 
 /**
- * Build new responsive type rules
+ * Build new fluid type rules
  * @param  {object} rule     old CSS rule
  * @return {object}          object of new CSS rules
  */
@@ -161,11 +161,11 @@ function buildRules(rule, declName, params, result) {
     rule.warn(result, 'this combination of units is not supported');
   }
 
-  // Build the responsive type decleration
+  // Build the fluid type decleration
   sizeDiff = parseFloat(maxSize) - parseFloat(minSize);
   rangeDiff = parseFloat(maxWidth) - parseFloat(minWidth);
 
-  rules.responsive = 'calc(' + minSize + ' + ' + sizeDiff + ' * ((100vw - ' + minWidth + ') / ' + rangeDiff + '))';
+  rules.fluid = 'calc(' + minSize + ' + ' + sizeDiff + ' * ((100vw - ' + minWidth + ') / ' + rangeDiff + '))';
 
   // Build the media queries
   rules.minMedia = postcss.atRule({
@@ -218,8 +218,8 @@ const plugin = () => ({
       rule.walkDecls(/^(font-size|line-height|letter-spacing)$/, decl => {
         let params;
 
-        // If decl doesn't contain responsve keyword, exit
-        if (decl.value.indexOf('responsive') === -1) {
+        // If decl doesn't contain fluid keyword, exit
+        if (decl.value.indexOf('fluid') === -1) {
           return;
         }
 
@@ -227,9 +227,9 @@ const plugin = () => ({
         params = fetchParams(thisRule, decl.prop);
         newRules = buildRules(thisRule, decl.prop, params, result);
 
-        // Insert the base responsive decleration
-        if (decl.value.indexOf('responsive') > -1) {
-          decl.replaceWith({ prop: decl.prop, value: newRules.responsive });
+        // Insert the base fluid declaration
+        if (decl.value.indexOf('fluid') > -1) {
+          decl.replaceWith({ prop: decl.prop, value: newRules.fluid });
         }
 
         // Insert the media queries
