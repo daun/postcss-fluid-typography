@@ -206,38 +206,49 @@ function buildRules(rule, declName, params, result) {
   return rules;
 }
 
-module.exports = postcss.plugin('postcss-fluid-typography', () => {
-  return function (css, result) {
-    css.walkRules(function (rule) {
-      let thisRule, newRules, params;
+/**
+ * PostCSS Fluid Typography plugin
+ * @param {Object} opts Plugin options
+ * @return {Object} PostCSS plugin
+ */
+function postcssFluidTypography(opts = {}) {
+  return {
+    postcssPlugin: 'postcss-fluid-typography',
+    Once(root, { result }) {
+      root.walkRules(function (rule) {
+        let thisRule, newRules, params;
 
-      // Store root font-size (for px->rem conversion)
-      if ([':root', 'html'].includes(rule.selector)) {
-        rule.walkDecls('font-size', (decl) => {
-          if (decl.value.indexOf('px') > -1) {
-            rootSize = decl.value;
-          }
-        });
-      }
-
-      rule.walkDecls(/^(font-size|line-height|letter-spacing)$/, (decl) => {
-        // If decl doesn't contain fluid keyword, exit
-        if (decl.value.indexOf('fluid') === -1) {
-          return;
+        // Store root font-size (for px->rem conversion)
+        if ([':root', 'html'].includes(rule.selector)) {
+          rule.walkDecls('font-size', (decl) => {
+            if (decl.value.indexOf('px') > -1) {
+              rootSize = decl.value;
+            }
+          });
         }
 
-        thisRule = decl.parent;
-        params = fetchParams(thisRule, decl.prop);
-        newRules = buildRules(thisRule, decl.prop, params, result);
+        rule.walkDecls(/^(font-size|line-height|letter-spacing)$/, (decl) => {
+          // If decl doesn't contain fluid keyword, exit
+          if (decl.value.indexOf('fluid') === -1) {
+            return;
+          }
 
-        // Insert the base fluid declaration
-        decl.replaceWith(newRules.fluid);
-        thisRule.prepend(newRules.variable);
+          thisRule = decl.parent;
+          params = fetchParams(thisRule, decl.prop);
+          newRules = buildRules(thisRule, decl.prop, params, result);
 
-        // Insert the media queries
-        thisRule.after(newRules.minMedia);
-        thisRule.after(newRules.maxMedia);
+          // Insert the base fluid declaration
+          decl.replaceWith(newRules.fluid);
+
+          // Insert the media queries
+          thisRule.after(newRules.minMedia);
+          thisRule.after(newRules.maxMedia);
+        });
       });
-    });
+    }
   };
-});
+}
+
+postcssFluidTypography.postcss = true;
+
+module.exports = postcssFluidTypography;

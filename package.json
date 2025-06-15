@@ -30,14 +30,14 @@
     "chai": "^4.0.2",
     "eslint": "^4.1.1",
     "mocha": "^3.4.2",
-    "postcss": "^8.4.6"
+    "postcss": "^8.0.0"
   },
   "peerDependencies": {
-    "postcss": "^8.4.6"
+    "postcss": "^8.0.0"
   },
   "scripts": {
     "test": "mocha test",
-    "posttest": "eslint .",
+    "lint": "eslint .",
     "format": "eslint . --fix"
   }
 }
