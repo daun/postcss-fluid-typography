@@ -5,10 +5,12 @@
 @media screen and (min-width: 1280px) {
   .foo {
     font-size: 21px;
+    --font-size: 21px;
   }
 }
 @media screen and (max-width: 420px) {
   .foo {
     font-size: 12px;
+    --font-size: 12px;
   }
 }

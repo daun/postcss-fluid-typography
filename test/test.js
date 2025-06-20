@@ -11,14 +11,13 @@ function compareWarnings(warnings, expected) {
 }
 
 function test(fixture, opts, warnings, done) {
-  let input = fixture + '.css',
-      expected = fixture + '.expected.css';
-
-  input = fs.readFileSync(path.join(__dirname, 'fixtures', input), 'utf8');
-  expected = fs.readFileSync(path.join(__dirname, 'fixtures', expected), 'utf8');
+  const from = path.join(__dirname, 'fixtures', fixture + '.css');
+  const to = path.join(__dirname, 'fixtures', fixture + '.expected.css');
+  const input = fs.readFileSync(from, 'utf8');
+  const expected = fs.readFileSync(to, 'utf8');
 
   postcss([ plugin(opts) ])
-    .process(input)
+    .process(input, { from, to })
     .then(result => {
       expect(result.css).to.eql(expected);
 

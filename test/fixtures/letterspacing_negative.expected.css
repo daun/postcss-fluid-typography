@@ -4,10 +4,12 @@
 @media screen and (min-width: 900px) {
   .foo {
     letter-spacing: -30px;
+    --letter-spacing: -30px;
   }
 }
 @media screen and (max-width: 300px) {
   .foo {
     letter-spacing: -10px;
+    --letter-spacing: -10px;
   }
 }

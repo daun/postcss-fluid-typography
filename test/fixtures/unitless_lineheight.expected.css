@@ -4,10 +4,12 @@
 @media screen and (min-width: 1280px) {
   .foo {
     line-height: 2;
+    --line-height: 2;
   }
 }
 @media screen and (max-width: 420px) {
   .foo {
     line-height: 1.5;
+    --line-height: 1.5;
   }
 }
