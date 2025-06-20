@@ -170,37 +170,61 @@ function buildRules(rule, declName, params, result) {
   // @eslint-disable-next-line
   const fluid = 'calc(' + minSize + ' + ' + sizeDiff + ' * ((100vw - ' + minWidth + ') / ' + rangeDiff + '))';
 
-  rules.fluid = postcss.decl({ prop: declName, value: fluid });
+  rules.fluid = postcss.decl({
+    prop: declName,
+    value: fluid,
+    source: rule.source
+  });
   rules.variable = { prop: `--${declName}`, value: fluid };
 
   // Build the media queries
   rules.minMedia = postcss.atRule({
     name: 'media',
     params: 'screen and (max-width: ' + params.minWidth + ')',
+    source: rule.source
   });
 
   rules.maxMedia = postcss.atRule({
     name: 'media',
     params: 'screen and (min-width: ' + params.maxWidth + ')',
+    source: rule.source
   });
 
   // Add the required content to new media queries
   rules.minMedia
     .append({
       selector: rule.selector,
+      source: rule.source
     })
     .walkRules((selector) => {
-      selector.append({ prop: declName, value: params.minSize });
-      selector.append({ prop: `--${declName}`, value: params.minSize });
+      selector.append({
+        prop: declName,
+        value: params.minSize,
+        source: rule.source
+      });
+      selector.append({
+        prop: `--${declName}`,
+        value: params.minSize,
+        source: rule.source
+      });
     });
 
   rules.maxMedia
     .append({
       selector: rule.selector,
+      source: rule.source
     })
     .walkRules((selector) => {
-      selector.append({ prop: declName, value: params.maxSize });
-      selector.append({ prop: `--${declName}`, value: params.maxSize });
+      selector.append({
+        prop: declName,
+        value: params.maxSize,
+        source: rule.source
+      });
+      selector.append({
+        prop: `--${declName}`,
+        value: params.maxSize,
+        source: rule.source
+      });
     });
 
   return rules;
