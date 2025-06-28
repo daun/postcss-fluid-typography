@@ -1,5 +1,6 @@
 .foo {
   font-size: calc(1rem + 2 * ((100vw - 26.25rem) / 53.75));
+  --font-size: calc(1rem + 2 * ((100vw - 26.25rem) / 53.75));
 }
 
 @media screen and (min-width: 1280px) {
@@ -20,6 +21,7 @@
 
 .bar {
   font-size: calc(1rem + 2 * ((100vw - 20em) / 40));
+  --font-size: calc(1rem + 2 * ((100vw - 20em) / 40));
 }
 
 @media screen and (min-width: 60em) {
@@ -40,6 +42,7 @@
 
 .baz {
   font-size: calc(1em + 2 * ((100vw - undefined) / NaN));
+  --font-size: calc(1em + 2 * ((100vw - undefined) / NaN));
 }
 
 @media screen and (min-width: 1280px) {

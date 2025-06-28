@@ -1,5 +1,6 @@
 .foo {
   font-size: calc(1em + 2 * ((100vw - 20em) / 25));
+  --font-size: calc(1em + 2 * ((100vw - 20em) / 25));
 }
 @media screen and (min-width: 45em) {
   .foo {

@@ -1,5 +1,6 @@
 .foo {
   letter-spacing: calc(10px + 20 * ((100vw - 300px) / 600));
+  --letter-spacing: calc(10px + 20 * ((100vw - 300px) / 600));
 }
 @media screen and (min-width: 900px) {
   .foo {
