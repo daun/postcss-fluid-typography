@@ -175,7 +175,12 @@ function buildRules(rule, declName, params, result) {
     value: fluid,
     source: rule.source
   });
-  rules.variable = { prop: `--${declName}`, value: fluid };
+
+  rules.variable = postcss.decl({
+    prop: `--${declName}`,
+    value: fluid,
+    source: rule.source
+  });
 
   // Build the media queries
   rules.minMedia = postcss.atRule({
@@ -261,7 +266,8 @@ function postcssFluidTypography(opts = {}) {
           params = fetchParams(thisRule, decl.prop);
           newRules = buildRules(thisRule, decl.prop, params, result);
 
-          // Insert the base fluid declaration
+          // Insert the base fluid declaration and variable
+          decl.after(newRules.variable);
           decl.replaceWith(newRules.fluid);
 
           // Insert the media queries
